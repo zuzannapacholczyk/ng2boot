@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 
+import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 
 /**
@@ -40,5 +41,29 @@ public class MainController {
     Iterable<Event> events(@RequestParam("from") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime from,
                            @RequestParam("to") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime to) {
         return er.findBetween(from, to);
+    }
+
+    @RequestMapping("/api/events/create")
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @Transactional
+    Event createEvent(@RequestBody EventCreateParams params) {
+        Resource r = rr.findOne(params.resource);
+
+        Event e = new Event();
+        e.setStart(params.start);
+        e.setEnd(params.end);
+        e.setText(params.text);
+        e.setResource(r);
+
+        er.save(e);
+
+        return e;
+    }
+
+    public static class EventCreateParams {
+        public LocalDateTime start;
+        public LocalDateTime end;
+        public String text;
+        public Long resource;
     }
 }

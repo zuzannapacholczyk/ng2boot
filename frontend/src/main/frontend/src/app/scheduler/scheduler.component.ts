@@ -1,6 +1,6 @@
 import {AfterViewInit, Component, ViewChild} from '@angular/core';
 import {DayPilotSchedulerComponent} from "daypilot-pro-angular";
-import {DataService} from "./data.service";
+import {CreateEventParams, DataService} from "./data.service";
 
 @Component({
   selector: 'scheduler-component',
@@ -20,7 +20,24 @@ export class SchedulerComponent implements  AfterViewInit {
     ],
     days: 30,
     startDate: "2016-11-01",
-    scale: "Day"
+    scale: "Day",
+    onTimeRangeSelected: args => {
+      let name = prompt("New event name:", "Event");
+      this.scheduler.control.clearSelection();
+      if (!name) {
+        return;
+      }
+      let params: CreateEventParams = {
+        start: args.start.toString(),
+        end: args.end.toString(),
+        text: name,
+        resource: args.resource
+      };
+      this.ds.createEvent(params).subscribe(result => {
+        this.events.push(result);
+        this.scheduler.control.message("Event created");
+      });
+    }
   };
 
   constructor(private ds: DataService) {}
