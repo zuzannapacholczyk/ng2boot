@@ -6,9 +6,16 @@ import {SchedulerComponent} from "./scheduler.component";
 import {DataService} from "./data.service";
 
 @NgModule({
-  imports: [BrowserModule, HttpModule, DayPilotModule],
-  declarations: [SchedulerComponent],
-  exports: [SchedulerComponent],
+  imports: [
+    BrowserModule,
+    HttpModule,
+    DayPilotModule
+  ],
+  declarations: [
+    SchedulerComponent
+  ],
+  exports: [
+    SchedulerComponent],
   providers: [DataService]
 })
 
